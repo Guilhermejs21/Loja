@@ -1,4 +1,4 @@
-const API_URL = "https://localhost:7171";
+const API_URL = "http://localhost:5000";
 
 let produtos = [];
 
