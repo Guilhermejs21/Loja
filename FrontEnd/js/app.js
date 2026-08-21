@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000";
+const API_URL = "https://guilhermejs21.github.io/Loja/FrontEnd/index.html";
 
 let produtos = [];
 
