@@ -41,7 +41,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
+app.UseCors("FrontendPolicy");
 app.MapControllers();
 
 app.Run();
