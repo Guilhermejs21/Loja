@@ -1,81 +1,62 @@
 # Loja Full Stack
 
-Projeto de uma loja virtual desenvolvido para praticar o desenvolvimento de aplicações web utilizando uma API em ASP.NET Core e um frontend desenvolvido com HTML, CSS e JavaScript.
-
-## Sobre o projeto
-
-A aplicação consiste em uma loja virtual onde os produtos são armazenados em um banco de dados e disponibilizados através de uma API.
-
-O frontend consome essa API e permite que o usuário visualize os produtos e gerencie seu carrinho de compras.
-
-## Tecnologias utilizadas
-
-### Backend
-
-- C#
-- ASP.NET Core Web API
-- Entity Framework Core
-- SQL Server
-- Swagger
-
-### Frontend
-
-- HTML5
-- CSS3
-- JavaScript
+Loja virtual full stack com API REST em ASP.NET Core, persistência em SQL Server e interface construída com HTML, CSS e JavaScript puro.
 
 ## Funcionalidades
 
-### Produtos
+- Listagem e consulta de produtos
+- Cadastro, atualização e exclusão de produtos
+- Cadastro e consulta de clientes
+- Criação e consulta de pedidos
+- Carrinho persistido no navegador com `localStorage`
+- Controle de quantidade, subtotal e total
 
-- Listagem de produtos
-- Busca de produto por ID
-- Cadastro de produtos
-- Atualização de produtos
-- Exclusão de produtos
+## Tecnologias
 
-### Carrinho
+**Backend:** C#, ASP.NET Core Web API, Entity Framework Core, SQL Server e Swagger.
 
-- Adicionar produtos ao carrinho
-- Controlar a quantidade de produtos
-- Remover uma unidade do produto
-- Remover completamente o produto quando a quantidade chega a zero
-- Calcular o subtotal de cada produto
-- Calcular o valor total do carrinho
-- Exibir a quantidade total de itens no indicador do carrinho
+**Frontend:** HTML5, CSS3 e JavaScript, sem frameworks.
 
-## Estrutura do projeto
+## Estrutura
 
 ```text
-Loja
-│
-├── BackEnd
-│   │
-│   └── loja.api
-│       │
-│       ├── Controllers
-│       │   └── ProdutosController.cs
-│       │
-│       ├── Data
-│       │   └── AppDbContext.cs
-│       │
-│       ├── Models
-│       │   └── Produto.cs
-│       │
-│       ├── Migrations
-│       │
-│       ├── appsettings.json
-│       │
-│       └── Program.cs
-│
-└── FrontEnd
-    │
+Loja/
+├── BackEnd/loja.api/
+│   ├── Controllers/
+│   ├── Data/
+│   ├── Migrations/
+│   └── Models/
+└── FrontEnd/
+    ├── css/
+    ├── js/
     ├── index.html
-    ├── carrinho.html
-    │
-    ├── css
-    │   └── global.css
-    │
-    └── js
-        ├── app.js
-        └── carrinho.js
+    └── carrinho.html
+```
+
+## Como executar
+
+### Backend
+
+1. Tenha o SQL Server disponível.
+2. Confira `DefaultConnection` em `BackEnd/loja.api/appsettings.json`.
+3. Execute:
+
+```bash
+dotnet restore BackEnd/loja.api/loja.api.csproj
+dotnet ef database update --project BackEnd/loja.api
+dotnet run --project BackEnd/loja.api
+```
+
+### Frontend
+
+Abra `FrontEnd/index.html` com um servidor local, como o Live Server. Se a porta da API mudar, atualize a URL utilizada nos arquivos JavaScript.
+
+## Endpoints principais
+
+- `/Produtos`
+- `/Cliente`
+- `/Pedidos`
+
+## Aprendizados
+
+Projeto criado para praticar a integração completa entre frontend, API REST e banco de dados, incluindo CRUD, relacionamentos e consumo de API com `fetch`.
