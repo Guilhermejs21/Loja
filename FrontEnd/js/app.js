@@ -1,6 +1,6 @@
 
-const API_URL = "http://localhost:5264";
 
+const API_URL = "https://lojaapi-g2abehaugpc5grgk.canadacentral-01.azurewebsites.net";
 let produtos = [];
 
 async function buscarProdutos() {
