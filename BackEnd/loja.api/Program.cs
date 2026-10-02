@@ -3,26 +3,27 @@ using loja.api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CONTROLLERS
 builder.Services.AddControllers();
 
+// SWAGGER
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// CONEXÃO COM O BANCO DE DADOS
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")
     )
 );
 
+// CONFIGURAÇÃO CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontendPolicy", policy =>
     {
         policy
-            .WithOrigins(
-                "http://127.0.0.1:5500",
-                "https://guilhermejs21.github.io"
-            )
+            .WithOrigins("https://guilhermejs21.github.io")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -30,18 +31,20 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-app.UseCors("FrontendPolicy");
+// SWAGGER
+app.UseSwagger();
+app.UseSwaggerUI();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
+// HTTPS
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+// CORS
 app.UseCors("FrontendPolicy");
+
+// AUTORIZAÇÃO
+app.UseAuthorization();
+
+// ROTAS DOS CONTROLLERS
 app.MapControllers();
 
 app.Run();
