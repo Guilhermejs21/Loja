@@ -19,7 +19,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("FrontendPolicy", policy =>
     {
         policy
-            .WithOrigins("http://127.0.0.1:5500")
+            .WithOrigins(
+                "http://127.0.0.1:5500",
+                "https://guilhermejs21.github.io"
+            )
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
