@@ -1,8 +1,9 @@
 
-
 const API_URL = "https://lojaapi-g2abehaugpc5grgk.canadacentral-01.azurewebsites.net";
+
 let produtos = [];
 
+// BUSCAR PRODUTOS
 async function buscarProdutos() {
     try {
         const resposta = await fetch(`${API_URL}/api/Produtos`);
@@ -13,35 +14,104 @@ async function buscarProdutos() {
 
         produtos = await resposta.json();
 
-        const listaProdutos = document.getElementById("lista-produtos");
-
-        produtos.forEach(produto => {
-            const produtoElement = document.createElement("div");
-
-            produtoElement.classList.add("produto-card");
-
-            produtoElement.innerHTML = `
-                <h3>${produto.nome}</h3>
-
-                <p>
-                    R$ ${produto.preco.toFixed(2)}
-                </p>
-
-                <button onclick="adicionarAoCarrinho(${produto.id})">
-                    Adicionar ao carrinho
-                </button>
-            `;
-
-            listaProdutos.appendChild(produtoElement);
-        });
+        renderizarProdutos();
 
     } catch (erro) {
-        console.error(erro);
+        console.error("Erro ao carregar produtos:", erro);
     }
 
     atualizarIndicadorCarrinho();
 }
 
+// RENDERIZAR PRODUTOS
+function renderizarProdutos() {
+    const listaProdutos = document.getElementById("lista-produtos");
+
+    listaProdutos.innerHTML = "";
+
+    produtos.forEach(produto => {
+        const produtoElement = document.createElement("div");
+
+        produtoElement.classList.add("produto-card");
+
+        const titulo = document.createElement("h3");
+        titulo.textContent = produto.nome;
+
+        const preco = document.createElement("p");
+        preco.textContent = `R$ ${Number(produto.preco).toFixed(2)}`;
+
+        const botao = document.createElement("button");
+        botao.textContent = "Adicionar ao carrinho";
+        botao.addEventListener("click", () => {
+            adicionarAoCarrinho(produto.id);
+        });
+
+        produtoElement.append(titulo, preco, botao);
+
+        listaProdutos.appendChild(produtoElement);
+    });
+}
+
+// CADASTRAR PRODUTO
+async function cadastrarProduto(event) {
+    event.preventDefault();
+
+    const nome = document.getElementById("nome-produto").value.trim();
+
+    const preco = Number(
+        document.getElementById("preco-produto").value
+    );
+
+    const botao = document.getElementById("btn-cadastrar");
+
+    if (!nome || !Number.isFinite(preco) || preco <= 0) {
+        alert("Informe um nome e um preço válido.");
+        return;
+    }
+
+    const novoProduto = {
+        nome: nome,
+        preco: preco
+    };
+
+    try {
+        botao.disabled = true;
+        botao.textContent = "Cadastrando...";
+
+        const resposta = await fetch(`${API_URL}/api/Produtos`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(novoProduto)
+        });
+
+        if (!resposta.ok) {
+            const mensagem = await resposta.text();
+
+            throw new Error(
+                mensagem || `Erro HTTP ${resposta.status}`
+            );
+        }
+
+        alert("Produto cadastrado com sucesso!");
+
+        document.getElementById("form-produto").reset();
+
+        await buscarProdutos();
+
+    } catch (erro) {
+        console.error("Erro ao cadastrar produto:", erro);
+
+        alert("Não foi possível cadastrar o produto. Verifique a API.");
+
+    } finally {
+        botao.disabled = false;
+        botao.textContent = "Cadastrar produto";
+    }
+}
+
+// ADICIONAR AO CARRINHO
 function adicionarAoCarrinho(id) {
     const carrinho = JSON.parse(
         localStorage.getItem("carrinho")
@@ -58,6 +128,8 @@ function adicionarAoCarrinho(id) {
             produto => produto.id === id
         );
 
+        if (!produto) return;
+
         carrinho.push({
             ...produto,
             quantidade: 1
@@ -72,6 +144,7 @@ function adicionarAoCarrinho(id) {
     atualizarIndicadorCarrinho();
 }
 
+// ATUALIZAR INDICADOR DO CARRINHO
 function atualizarIndicadorCarrinho() {
     const carrinho = JSON.parse(
         localStorage.getItem("carrinho")
@@ -90,5 +163,9 @@ function atualizarIndicadorCarrinho() {
         indicador.textContent = quantidadeTotal;
     }
 }
+
+// INICIALIZAÇÃO
+document.getElementById("form-produto")
+    .addEventListener("submit", cadastrarProduto);
 
 buscarProdutos();
